@@ -1,0 +1,25 @@
+const core = require("@actions/core");
+const github = require("@actions/github");
+
+async function run() {
+  const issueTitle = core.getInput("issueTitle");
+  const catFact = core.getInput("catFact");
+
+  const token = core.getInput("repoToken");
+  try {
+    const octokit = new github.GitHub(token);
+    
+    /* https://www.npmjs.com/package/@actions/github 
+     go through for new changes in the library */
+    const newIssue = await octokit.rest.issues.create({
+      repo: github.context.repo.repo,
+      owner: github.context.repo.owner,
+      title: issueTitle,
+      body: catFact
+    });
+  } catch (error) {
+    core.setFailed(error.message);
+  }
+}
+
+run();
